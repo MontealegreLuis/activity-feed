@@ -1,11 +1,10 @@
 package com.montealegreluis.activityfeed;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
 import static com.montealegreluis.activityfeed.builders.ContextBuilder.aContext;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 final class ActivityTest {
   @Test

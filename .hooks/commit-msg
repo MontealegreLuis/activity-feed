@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# http://chris.beams.io/posts/git-commit/#seven-rules
+# https://gist.github.com/agnivade/67b42d664ece2d4210c7
+
+cnt=0
+while IFS='' read -r line || [[ -n "$line" ]]; do
+  cnt=$((cnt+1))
+  length=${#line}
+  if [ $cnt -eq 1 ]; then
+    # Checking if subject exceeds 50 characters
+    if [ $length -gt 50 ]; then
+      echo "Your subject line exceeds 50 characters."
+      exit 1
+    fi
+    # Check Conventional Commits format in subject line
+    regex='(build|chore|ci|docs|feat|fix|refactor|revert|style|test): [a-zA-Z0-9]+'
+    if [[ ! $line =~ $regex ]]; then
+        echo "Subject is not following Conventional Commits convention"
+        exit 1
+    fi
+    # Last character must not have a punctuation
+    i=$(($length-1))
+    last_char=${line:$i:1}
+    if [[ ! $last_char =~ [0-9a-zA-Z] ]]; then
+      echo "Last character of the subject line must not have punctuation."
+      exit 1
+    fi
+  elif [ $cnt -eq 2 ]; then
+    # Subject must be followed by a blank line
+    if [ $length -ne 0 ]; then
+      echo "Your subject line follows a non-empty line. Subject lines should always be followed by a blank line."
+      exit 1
+    fi
+  else
+    # Any line in body must not exceed 72 characters
+    if [ $length -gt 72 ]; then
+      echo "The line \"$line\" exceeds 72 characters."
+      exit 1
+    fi
+  fi
+done < "$1"
