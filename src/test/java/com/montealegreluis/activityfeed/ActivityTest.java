@@ -25,4 +25,12 @@ final class ActivityTest {
     assertTrue(contextValues.containsKey("userId"));
     assertEquals(userId, contextValues.get("userId"));
   }
+
+  @Test
+  void it_knows_its_message() {
+    var message = "A message";
+    var activity = Activity.info("identifier", message, aContext().build());
+
+    assertEquals(message, activity.message());
+  }
 }
