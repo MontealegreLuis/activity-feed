@@ -1,6 +1,5 @@
 package com.montealegreluis.activityfeed;
 
-import static com.montealegreluis.activityfeed.builders.ContextBuilder.aContext;
 import static net.logstash.logback.marker.Markers.appendEntries;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -12,8 +11,9 @@ import org.slf4j.Logger;
 final class ActivityFeedTest {
   @Test
   void it_logs_a_debugging_activity() {
-    var context = aContext().withEntry("filename", "test.pdf").build();
-    var activity = Activity.debug("file-saved", "File saved", context);
+    var activity =
+        Activity.debug(
+            "file-saved", "File saved", (context) -> context.put("filename", "test.pdf"));
 
     feed.log(activity);
 
@@ -22,9 +22,11 @@ final class ActivityFeedTest {
 
   @Test
   void it_logs_an_informational_activity() {
-    var context =
-        aContext().withEntry("customerId", "776ad420-59f5-44aa-b0b8-14b3d1c2b597").build();
-    var activity = Activity.info("save-customer-profile", "Customer profile was saved", context);
+    var activity =
+        Activity.info(
+            "save-customer-profile",
+            "Customer profile was saved",
+            (context) -> context.put("customerId", "776ad420-59f5-44aa-b0b8-14b3d1c2b597"));
 
     feed.log(activity);
 
@@ -33,8 +35,11 @@ final class ActivityFeedTest {
 
   @Test
   void it_logs_a_warning_activity() {
-    var context = aContext().withEntry("productPrice", "-100").build();
-    var activity = Activity.warning("invalid-product-price", "Product price is invalid", context);
+    var activity =
+        Activity.warning(
+            "invalid-product-price",
+            "Product price is invalid",
+            (context) -> context.put("productPrice", "-100"));
 
     feed.log(activity);
 
@@ -43,9 +48,11 @@ final class ActivityFeedTest {
 
   @Test
   void it_logs_an_error_activity() {
-    var context =
-        aContext().withEntry("exceptionMessage", "Cannot connect to database server").build();
-    var activity = Activity.error("server-error", "Server error", context);
+    var activity =
+        Activity.error(
+            "server-error",
+            "Server error",
+            (context) -> context.put("exceptionMessage", "Cannot connect to database server"));
 
     feed.log(activity);
 
