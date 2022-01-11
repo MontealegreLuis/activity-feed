@@ -16,7 +16,7 @@ final class ActivityFeedTest {
         Activity.debug(
             "file-saved", "File saved", (context) -> context.put("filename", "test.pdf"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger, times(1)).debug(appendEntries(activity.context()), activity.message());
   }
@@ -28,7 +28,7 @@ final class ActivityFeedTest {
         Activity.debug(
             "file-saved", "File saved", (context) -> context.put("filename", "test.pdf"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger, times(0)).debug(any(Marker.class), any());
   }
@@ -42,7 +42,7 @@ final class ActivityFeedTest {
             "Customer profile was saved",
             (context) -> context.put("customerId", "776ad420-59f5-44aa-b0b8-14b3d1c2b597"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger).info(appendEntries(activity.context()), activity.message());
   }
@@ -56,7 +56,7 @@ final class ActivityFeedTest {
             "Customer profile was saved",
             (context) -> context.put("customerId", "776ad420-59f5-44aa-b0b8-14b3d1c2b597"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger, times(0)).info(any(Marker.class), any());
   }
@@ -70,7 +70,7 @@ final class ActivityFeedTest {
             "Product price is invalid",
             (context) -> context.put("productPrice", "-100"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger).warn(appendEntries(activity.context()), activity.message());
   }
@@ -84,7 +84,7 @@ final class ActivityFeedTest {
             "Product price is invalid",
             (context) -> context.put("productPrice", "-100"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger, times(0)).warn(any(Marker.class), any());
   }
@@ -98,7 +98,7 @@ final class ActivityFeedTest {
             "Server error",
             (context) -> context.put("exceptionMessage", "Cannot connect to database server"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger).error(appendEntries(activity.context()), activity.message());
   }
@@ -112,7 +112,7 @@ final class ActivityFeedTest {
             "Server error",
             (context) -> context.put("exceptionMessage", "Cannot connect to database server"));
 
-    feed.log(activity);
+    feed.record(activity);
 
     verify(logger, times(0)).error(any(Marker.class), any());
   }

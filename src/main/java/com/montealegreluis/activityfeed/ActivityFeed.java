@@ -12,7 +12,7 @@ public final class ActivityFeed {
     this.logger = logger;
   }
 
-  public void log(Activity activity) {
+  public void record(Activity activity) {
     if (Level.INFO.equals(activity.level()) && logger.isInfoEnabled()) {
       logger.info(appendEntries(activity.context()), activity.message());
     } else if (Level.WARNING.equals(activity.level()) && logger.isWarnEnabled()) {
