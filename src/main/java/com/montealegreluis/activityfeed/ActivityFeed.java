@@ -13,13 +13,13 @@ public final class ActivityFeed {
   }
 
   public void log(Activity activity) {
-    if (Level.INFO.equals(activity.level())) {
+    if (Level.INFO.equals(activity.level()) && logger.isInfoEnabled()) {
       logger.info(appendEntries(activity.context()), activity.message());
-    } else if (Level.WARNING.equals(activity.level())) {
+    } else if (Level.WARNING.equals(activity.level()) && logger.isWarnEnabled()) {
       logger.warn(appendEntries(activity.context()), activity.message());
-    } else if (Level.SEVERE.equals(activity.level())) {
+    } else if (Level.SEVERE.equals(activity.level()) && logger.isErrorEnabled()) {
       logger.error(appendEntries(activity.context()), activity.message());
-    } else {
+    } else if (Level.CONFIG.equals(activity.level()) && logger.isDebugEnabled()) {
       logger.debug(appendEntries(activity.context()), activity.message());
     }
   }
