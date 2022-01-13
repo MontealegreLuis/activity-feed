@@ -18,7 +18,7 @@ maven {
     url = uri("https://maven.pkg.github.com/montealegreluis/activity-feed")
     credentials {
         username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-        password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
     }
 }
 ```
@@ -29,4 +29,4 @@ Lastly, add the following entry to your `dependencies` in your `build.gradle` fi
 implementation 'com.montealegreluis:activity-feed:1.0.0'
 ```
 
-Please find what the latest version is [here](https://github.com/MontealegreLuis/activity-feed/packages/1180783).
+Please find what the latest version is [here](https://github.com/MontealegreLuis/activity-feed/packages/1188930).

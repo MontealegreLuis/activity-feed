@@ -55,4 +55,4 @@ Add the following entry to your `dependencies` in your project's `pom.xml` file.
 </dependency>
 ```
 
-Please find what the latest version is [here](https://github.com/MontealegreLuis/activity-feed/packages/1180783).
+Please find what the latest version is [here](https://github.com/MontealegreLuis/activity-feed/packages/1188930).
