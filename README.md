@@ -167,7 +167,7 @@ To integrate with Spring Boot, you'll need to add the following Logstash encoder
 implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 ```
 
-And you'll need to configure a JSON encoder in `src/main/resources/logback.xml` as shown below
+And you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below
 
 ```xml
 <configuration>
@@ -191,7 +191,7 @@ fields @timestamp, `x-correlation-id`, message
 | limit 50
 ```
 
-You could filter using any value within `contex`.
+You could filter using any value within `context`.
 
 ## Contribute
 
