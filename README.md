@@ -13,7 +13,7 @@ Log Markers allow you to stamp individual log entries with unique tokens, improv
 2. [Maven](https://github.com/MontealegreLuis/activity-feed/blob/main/docs/installation/maven.md)
 3. [Gradle](https://github.com/MontealegreLuis/activity-feed/blob/main/docs/installation/gradle.md)
 
-## Examples
+## Usage
 
 The activity feed supports 4 logging levels
 
@@ -60,6 +60,38 @@ The example above would be represented as JSON as follows
     "maximumPrice": 200,
     "category": "Toys",
     "durationInMilliseconds": 200
+  }
+}
+```
+
+### Adding objects as context entries
+
+This library provides a `ContextSerializer` that depends on an [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html) to convert any type of object into a context entry.
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+// ...
+
+var serializer = new ContextSerializer(new ObjectMapper());
+var user = User.signUp("Jane Doe", 23)
+
+Activity.info(
+  "sign-up-user",
+  "User sign-up completed",
+  (context)-> context.put("user", serializer.toMap(user)));
+```
+
+The example above would be represented as JSON as follows
+
+```json
+{
+  "context": {
+    "identifier": "sign-up-user",
+    "user": {
+      "name": "Jane Doe",
+      "age": 23
+    }
   }
 }
 ```
