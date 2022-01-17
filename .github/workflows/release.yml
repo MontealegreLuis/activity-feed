@@ -27,3 +27,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ secrets.GITHUB_ACTOR }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0
