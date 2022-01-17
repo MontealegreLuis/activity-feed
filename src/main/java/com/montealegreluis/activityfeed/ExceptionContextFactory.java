@@ -9,8 +9,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ExceptionContext {
-  public static Map<String, Object> extractForm(Throwable exception) {
+public final class ExceptionContextFactory {
+  public static Map<String, Object> contextFrom(Throwable exception) {
     Map<String, Object> context = new LinkedHashMap<>();
     context.put("message", exception.getMessage());
     StackTraceElement[] stackTrace = exception.getStackTrace();
@@ -23,7 +23,7 @@ public final class ExceptionContext {
         Arrays.stream(stackTrace).map(StackTraceElement::toString).collect(Collectors.toList());
     context.put("trace", trace);
     if (exception.getCause() != null) {
-      context.put("previous", extractForm(exception.getCause()));
+      context.put("previous", contextFrom(exception.getCause()));
     }
     return context;
   }

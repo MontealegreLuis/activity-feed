@@ -73,7 +73,7 @@ Activity.error(
     (context) -> 
       context.put(
         "exception",
-        ExceptionContext.extractForm(exception)));
+        ExceptionContextFactory.contextFrom(exception)));
 ```
 
 The example above would be represented as JSON as follows
@@ -98,7 +98,7 @@ The example above would be represented as JSON as follows
 }
 ```
 
-`ExceptionContext.extractForm` will extract recursively information from previous exceptions.
+`ExceptionContextFactory.contextFrom` will extract recursively information from previous exceptions.
 
 ```json
 {
@@ -136,14 +136,14 @@ You'll probably want to abstract the creation of the activity in a factory.
 
 ```java
 import static com.montealegreluis.activityfeed.Activity.error;
-import static com.montealegreluis.activityfeed.ExceptionContext.extractForm;
+import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFrom;
 
 public class ActivityFactory {
   public static Activity exceptionWasThrown(Throwable exception) {
       return error(
           "unhandled-exception",
           exception.getMessage(),
-          (context) -> context.put("exception", extractForm(exception)));
+          (context) -> context.put("exception", contextFrom(exception)));
     }
 }
 ```

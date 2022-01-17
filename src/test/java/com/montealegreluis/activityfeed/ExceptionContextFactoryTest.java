@@ -6,18 +6,19 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-final class ExceptionContextTest {
+final class ExceptionContextFactoryTest {
   @Test
   void it_extracts_context_information_from_exception() {
     var message = "Something went wrong";
     var exception = new RuntimeException(message);
 
-    var context = ExceptionContext.extractForm(exception);
+    var context = ExceptionContextFactory.contextFrom(exception);
 
     assertEquals(message, context.get("message"));
-    assertEquals(ExceptionContextTest.class.getCanonicalName(), context.get("class"));
+    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), context.get("class"));
     assertTrue(context.containsKey("line"));
-    assertTrue(context.get("file").toString().contains(ExceptionContextTest.class.getSimpleName()));
+    assertTrue(
+        context.get("file").toString().contains(ExceptionContextFactoryTest.class.getSimpleName()));
     @SuppressWarnings("unchecked")
     List<String> trace = (List<String>) (context.get("trace"));
     assertTrue(trace.size() > 0);
@@ -31,12 +32,13 @@ final class ExceptionContextTest {
     var message = "Something went wrong";
     var exception = new RuntimeException(message, cause);
 
-    var context = ExceptionContext.extractForm(exception);
+    var context = ExceptionContextFactory.contextFrom(exception);
 
     assertEquals(message, context.get("message"));
-    assertEquals(ExceptionContextTest.class.getCanonicalName(), context.get("class"));
+    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), context.get("class"));
     assertTrue(context.containsKey("line"));
-    assertTrue(context.get("file").toString().contains(ExceptionContextTest.class.getSimpleName()));
+    assertTrue(
+        context.get("file").toString().contains(ExceptionContextFactoryTest.class.getSimpleName()));
     @SuppressWarnings("unchecked")
     List<String> trace = (List<String>) (context.get("trace"));
     assertTrue(trace.size() > 0);
@@ -45,10 +47,13 @@ final class ExceptionContextTest {
     @SuppressWarnings("unchecked")
     var previous = (Map<String, Object>) (context.get("previous"));
     assertEquals(causeMessage, previous.get("message"));
-    assertEquals(ExceptionContextTest.class.getCanonicalName(), previous.get("class"));
+    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), previous.get("class"));
     assertTrue(previous.containsKey("line"));
     assertTrue(
-        previous.get("file").toString().contains(ExceptionContextTest.class.getSimpleName()));
+        previous
+            .get("file")
+            .toString()
+            .contains(ExceptionContextFactoryTest.class.getSimpleName()));
     @SuppressWarnings("unchecked")
     List<String> previousTrace = (List<String>) (context.get("trace"));
     assertTrue(previousTrace.size() > 0);
@@ -60,7 +65,7 @@ final class ExceptionContextTest {
     var message = "Something went wrong";
     var exception = new NoStackTraceException(message);
 
-    var context = ExceptionContext.extractForm(exception);
+    var context = ExceptionContextFactory.contextFrom(exception);
 
     assertEquals(message, context.get("message"));
     assertFalse(context.containsKey("class"));
