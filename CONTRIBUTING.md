@@ -16,7 +16,8 @@ Pull requests for bug fixes must be based on the current stable branch whereas p
 
 ### Git commit format
 
-Commit messages must follow the [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) which is enforced as a Git hook.
+Commit messages must follow the [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0-beta.2/).
+Said convention is enforced in a Git hook (which requires you to install [Node](https://nodejs.dev/learn/how-to-install-nodejs)).
 
 The allowed commit types are:
 

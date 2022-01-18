@@ -15,7 +15,7 @@ Log Markers allow you to stamp individual log entries with unique tokens, improv
 
 ## Usage
 
-The activity feed supports 4 logging levels
+The activity feed supports 4 logging levels.
 
 ```java
 Activity.debug("identifier","Message");
@@ -28,7 +28,7 @@ Log markers are added as `Map` entries.
 This Maven package defines one root key in the `Map` called `context`. 
 The value of the `context` key is another `Map` that includes the given `identifier` by default.
 
-The examples above would be represented as JSON as follows
+The examples above would be represented as JSON as follows.
 
 ```json
 {
@@ -42,16 +42,16 @@ The examples above would be represented as JSON as follows
 
 ```java
 Activity.info(
-    "search-products",
-    "Search Products completed",
-    (context)->{
-      context.put("maximumPrice",2000);
-      context.put("category","Toys");
-      context.put("durationInMilliseconds",200);
-    });
+  "search-products",
+  "Search Products completed",
+  (context)->{
+    context.put("maximumPrice",2000);
+    context.put("category","Toys");
+    context.put("durationInMilliseconds",200);
+  });
 ```
 
-The example above would be represented as JSON as follows
+The example above would be represented as JSON as follows.
 
 ```json
 {
@@ -74,7 +74,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // ...
 
 var serializer = new ContextSerializer(new ObjectMapper());
-var user = User.signUp("Jane Doe", 23)
+var user = User.signUp("Jane Doe", 23);
 
 Activity.info(
   "sign-up-user",
@@ -100,15 +100,15 @@ The example above would be represented as JSON as follows
 
 ```java
 Activity.error(
-    "unhandled-exception",
-    exception.getMessage(),
-    (context) -> 
-      context.put(
-        "exception",
-        ExceptionContextFactory.contextFrom(exception)));
+  "unhandled-exception",
+  exception.getMessage(),
+  (context) -> 
+    context.put(
+      "exception",
+      ExceptionContextFactory.contextFrom(exception)));
 ```
 
-The example above would be represented as JSON as follows
+The example above would be represented as JSON as follows.
 
 ```json
 {
@@ -172,11 +172,11 @@ import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFr
 
 public class ActivityFactory {
   public static Activity exceptionWasThrown(Throwable exception) {
-      return error(
-          "unhandled-exception",
-          exception.getMessage(),
-          (context) -> context.put("exception", contextFrom(exception)));
-    }
+    return error(
+      "unhandled-exception",
+      exception.getMessage(),
+      (context) -> context.put("exception", contextFrom(exception)));
+  }
 }
 ```
 
@@ -199,7 +199,7 @@ To integrate with Spring Boot, you'll need to add the following Logstash encoder
 implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 ```
 
-And you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below
+And you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below.
 
 ```xml
 <configuration>
@@ -214,7 +214,7 @@ And you'll need to configure the encoder in `src/main/resources/logback.xml` as 
 
 ## Querying
 
-Below is an example on how to query AWS Cloudwatch using the markers provided by Activity Feed
+Below is an example on how to query AWS Cloudwatch using the markers provided by Activity Feed.
 
 ```sql
 fields @timestamp, `x-correlation-id`, message
