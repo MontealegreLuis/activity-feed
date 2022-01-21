@@ -96,6 +96,54 @@ The example above would be represented as JSON as follows
 }
 ```
 
+### Masking sensitive information
+
+This package provides a custom serializer to mask sensitive information.
+In order to mask a value, it must implement the `MaskedValue` interface.
+
+```java
+public final class FullName implements MaskedValue {}
+
+public final class Passport {
+  private final FullName fullName;
+  public Passport(FullName fullName) {
+    this.fullName = fullName;
+  }
+}
+```
+
+The second step is to configure your `ObjectMapper` as follows.
+
+```java
+var mapper = new ObjectMapper();
+var module = new SimpleModule();
+module.addSerializer(new MaskedValueSerializer());
+mapper.registerModule(module);
+```
+
+Once the object mapper is configured, your activity feed is ready to serialize and mask sensitive information.
+
+```java
+feed.record(Activity.info(
+  "save-travel-information",
+  "Travel information has been saved",
+  (context) -> context.put("passport", passport)
+));
+```
+
+The example above would be represented as JSON as follows
+
+```json
+{
+  "context": {
+    "identifier": "save-travel-information",
+    "passport": {
+      "fullName": "*****"
+    }
+  }
+}
+```
+
 ### Logging an exception
 
 ```java
