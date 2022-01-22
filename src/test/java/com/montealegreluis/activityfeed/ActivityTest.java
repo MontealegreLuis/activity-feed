@@ -1,7 +1,6 @@
 package com.montealegreluis.activityfeed;
 
-import static com.montealegreluis.activityfeed.ContextAssertions.assertContextSize;
-import static com.montealegreluis.activityfeed.ContextAssertions.assertContextValueEquals;
+import static com.montealegreluis.activityfeed.ContextAssertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.montealegreluis.assertions.IllegalArgumentException;
@@ -16,7 +15,7 @@ final class ActivityTest {
 
     var activityContext = activity.context();
 
-    assertTrue(activityContext.containsKey("context"));
+    assertContextHasKey("context", activityContext);
     @SuppressWarnings("unchecked")
     Map<String, Object> context = (Map<String, Object>) (activityContext.get("context"));
     assertContextSize(1, context);
@@ -39,7 +38,7 @@ final class ActivityTest {
 
     var activityContext = activity.context();
 
-    assertTrue(activityContext.containsKey("context"));
+    assertContextHasKey("context", activityContext);
     @SuppressWarnings("unchecked")
     Map<String, Object> context = (Map<String, Object>) (activityContext.get("context"));
     assertContextSize(3, context);
