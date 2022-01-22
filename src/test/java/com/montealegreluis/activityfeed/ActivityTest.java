@@ -72,4 +72,15 @@ final class ActivityTest {
     assertThrows(IllegalArgumentException.class, () -> Activity.info("identifier", " "));
     assertThrows(IllegalArgumentException.class, () -> Activity.warning("identifier", null));
   }
+
+  @Test
+  void it_can_be_compared_to_another_activity() {
+    var activityA = Activity.debug("debugging-activity", "Debugging activity");
+    var activityB = Activity.info("informational-activity", "Informational activity");
+
+    assertEquals(activityA, activityA);
+    assertEquals(activityA, Activity.debug("debugging-activity", "Debugging activity"));
+    assertNotEquals(activityA, activityB);
+    assertNotEquals(activityA, null);
+  }
 }

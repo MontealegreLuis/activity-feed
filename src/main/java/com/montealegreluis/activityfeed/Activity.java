@@ -4,7 +4,9 @@ import com.montealegreluis.assertions.Assert;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public final class Activity {
   private final Level level;
   private final String identifier;
