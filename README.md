@@ -240,14 +240,7 @@ feed.record(exceptionWasThrown(exception));
 
 ## Spring Boot integration
 
-To integrate with Spring Boot, you'll need to add the following Logstash encoder dependency.
-
-```groovy
-// build.gradle
-implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-```
-
-And you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below.
+To integrate with Spring Boot, you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below.
 
 ```xml
 <configuration>
