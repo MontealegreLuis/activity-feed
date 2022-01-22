@@ -77,10 +77,25 @@ final class ActivityTest {
   void it_can_be_compared_to_another_activity() {
     var activityA = Activity.debug("debugging-activity", "Debugging activity");
     var activityB = Activity.info("informational-activity", "Informational activity");
+    var activityC =
+        Activity.warning(
+            "warning-activity", "Warning activity", (context) -> context.put("warning", "warning"));
+    var activityD =
+        Activity.error(
+            "error-activity", "Error activity", (context) -> context.put("error", "error"));
 
     assertEquals(activityA, activityA);
     assertEquals(activityA, Activity.debug("debugging-activity", "Debugging activity"));
     assertNotEquals(activityA, activityB);
     assertNotEquals(activityA, null);
+    assertEquals(activityC, activityC);
+    assertEquals(
+        activityC,
+        Activity.warning(
+            "warning-activity",
+            "Warning activity",
+            (context) -> context.put("warning", "warning")));
+    assertNotEquals(activityC, activityD);
+    assertNotEquals(activityC, null);
   }
 }

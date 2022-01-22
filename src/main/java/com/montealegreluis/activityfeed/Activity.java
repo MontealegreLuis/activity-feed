@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "factory")
 public final class Activity {
   private final Level level;
   private final String identifier;
