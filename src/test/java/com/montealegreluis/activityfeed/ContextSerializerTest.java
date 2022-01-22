@@ -1,5 +1,7 @@
 package com.montealegreluis.activityfeed;
 
+import static com.montealegreluis.activityfeed.ContextAssertions.assertContextSize;
+import static com.montealegreluis.activityfeed.ContextAssertions.assertContextValueEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +30,9 @@ final class ContextSerializerTest {
     var age = 20;
     var context = serializer.toContextMap(new PersonalInformation(name, age));
 
-    assertEquals(2, context.size());
-    assertTrue(context.containsKey("name"));
-    assertEquals(name, context.get("name"));
-    assertTrue(context.containsKey("age"));
-    assertEquals(age, context.get("age"));
+    assertContextSize(2, context);
+    assertContextValueEquals(name, "name", context);
+    assertContextValueEquals(age, "age", context);
   }
 
   @Test
@@ -46,9 +46,8 @@ final class ContextSerializerTest {
 
     var context = serializer.toContextMap(new Passport(fullName));
 
-    assertEquals(1, context.size());
-    assertTrue(context.containsKey("fullName"));
-    assertEquals("*****", context.get("fullName"));
+    assertContextSize(1, context);
+    assertContextValueEquals("*****", "fullName", context);
   }
 
   @BeforeEach

@@ -1,5 +1,6 @@
 package com.montealegreluis.activityfeed;
 
+import static com.montealegreluis.activityfeed.ContextAssertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -14,15 +15,17 @@ final class ExceptionContextFactoryTest {
 
     var context = ExceptionContextFactory.contextFrom(exception);
 
-    assertEquals(message, context.get("message"));
-    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), context.get("class"));
-    assertTrue(context.containsKey("line"));
+    assertContextSize(5, context);
+    assertContextValueEquals(message, "message", context);
+    assertContextValueEquals(
+        ExceptionContextFactoryTest.class.getCanonicalName(), "class", context);
+    assertContextHasKey("line", context);
     assertTrue(
         context.get("file").toString().contains(ExceptionContextFactoryTest.class.getSimpleName()));
     @SuppressWarnings("unchecked")
     List<String> trace = (List<String>) (context.get("trace"));
     assertTrue(trace.size() > 0);
-    assertFalse(context.containsKey("previous"));
+    assertContextHasNoKey("previous", context);
   }
 
   @Test
@@ -34,21 +37,25 @@ final class ExceptionContextFactoryTest {
 
     var context = ExceptionContextFactory.contextFrom(exception);
 
-    assertEquals(message, context.get("message"));
-    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), context.get("class"));
-    assertTrue(context.containsKey("line"));
+    assertContextSize(6, context);
+    assertContextValueEquals(message, "message", context);
+    assertContextValueEquals(
+        ExceptionContextFactoryTest.class.getCanonicalName(), "class", context);
+    assertContextHasKey("line", context);
     assertTrue(
         context.get("file").toString().contains(ExceptionContextFactoryTest.class.getSimpleName()));
     @SuppressWarnings("unchecked")
     List<String> trace = (List<String>) (context.get("trace"));
     assertTrue(trace.size() > 0);
     // Previous exception
-    assertTrue(context.containsKey("previous"));
+    assertContextHasKey("previous", context);
     @SuppressWarnings("unchecked")
     var previous = (Map<String, Object>) (context.get("previous"));
     assertEquals(causeMessage, previous.get("message"));
-    assertEquals(ExceptionContextFactoryTest.class.getCanonicalName(), previous.get("class"));
-    assertTrue(previous.containsKey("line"));
+    assertContextValueEquals(causeMessage, "message", previous);
+    assertContextValueEquals(
+        ExceptionContextFactoryTest.class.getCanonicalName(), "class", previous);
+    assertContextHasKey("line", context);
     assertTrue(
         previous
             .get("file")
@@ -57,7 +64,7 @@ final class ExceptionContextFactoryTest {
     @SuppressWarnings("unchecked")
     List<String> previousTrace = (List<String>) (context.get("trace"));
     assertTrue(previousTrace.size() > 0);
-    assertFalse(previous.containsKey("previous"));
+    assertContextHasNoKey("previous", previous);
   }
 
   @Test
@@ -67,14 +74,15 @@ final class ExceptionContextFactoryTest {
 
     var context = ExceptionContextFactory.contextFrom(exception);
 
-    assertEquals(message, context.get("message"));
-    assertFalse(context.containsKey("class"));
-    assertFalse(context.containsKey("line"));
-    assertFalse(context.containsKey("file"));
+    assertContextSize(2, context);
+    assertContextValueEquals(message, "message", context);
+    assertContextHasNoKey("class", context);
+    assertContextHasNoKey("line", context);
+    assertContextHasNoKey("file", context);
     @SuppressWarnings("unchecked")
     List<String> trace = (List<String>) (context.get("trace"));
     assertEquals(0, trace.size());
-    assertFalse(context.containsKey("previous"));
+    assertContextHasNoKey("previous", context);
   }
 
   private static class NoStackTraceException extends Exception {

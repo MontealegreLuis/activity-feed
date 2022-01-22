@@ -1,5 +1,7 @@
 package com.montealegreluis.activityfeed;
 
+import static com.montealegreluis.activityfeed.ContextAssertions.assertContextSize;
+import static com.montealegreluis.activityfeed.ContextAssertions.assertContextValueEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.montealegreluis.assertions.IllegalArgumentException;
@@ -9,18 +11,16 @@ import org.junit.jupiter.api.Test;
 final class ActivityTest {
   @Test
   void its_context_includes_its_identifier() {
-    String userId = "5fa21160-f175-43dc-bac1-80d6e5d2d3bd";
-    String identifier = "an-identifier";
+    var identifier = "an-identifier";
     var activity = Activity.debug(identifier, "A message");
 
     var activityContext = activity.context();
 
     assertTrue(activityContext.containsKey("context"));
     @SuppressWarnings("unchecked")
-    Map<String, Object> contextValues = (Map<String, Object>) (activityContext.get("context"));
-    assertEquals(1, contextValues.size());
-    assertTrue(contextValues.containsKey("identifier"));
-    assertEquals(identifier, contextValues.get("identifier"));
+    Map<String, Object> context = (Map<String, Object>) (activityContext.get("context"));
+    assertContextSize(1, context);
+    assertContextValueEquals(identifier, "identifier", context);
   }
 
   @Test
@@ -41,14 +41,11 @@ final class ActivityTest {
 
     assertTrue(activityContext.containsKey("context"));
     @SuppressWarnings("unchecked")
-    Map<String, Object> contextValues = (Map<String, Object>) (activityContext.get("context"));
-    assertEquals(3, contextValues.size());
-    assertTrue(contextValues.containsKey("identifier"));
-    assertEquals(identifier, contextValues.get("identifier"));
-    assertTrue(contextValues.containsKey("userId"));
-    assertEquals(userId, contextValues.get("userId"));
-    assertTrue(contextValues.containsKey("correlationId"));
-    assertEquals(correlationId, contextValues.get("correlationId"));
+    Map<String, Object> context = (Map<String, Object>) (activityContext.get("context"));
+    assertContextSize(3, context);
+    assertContextValueEquals(identifier, "identifier", context);
+    assertContextValueEquals(userId, "userId", context);
+    assertContextValueEquals(correlationId, "correlationId", context);
   }
 
   @Test
