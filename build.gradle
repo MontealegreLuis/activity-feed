@@ -1,9 +1,9 @@
 plugins {
-    id 'java'
-    id 'com.github.sherter.google-java-format' version '0.9'
+    id 'java-library'
     id 'jacoco'
-    id 'info.solidsoft.pitest' version '1.7.0'
     id 'maven-publish'
+    id 'com.github.sherter.google-java-format' version '0.9'
+    id 'info.solidsoft.pitest' version '1.7.0'
 }
 
 group 'com.montealegreluis'
@@ -40,9 +40,9 @@ publishing {
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:1.7.32'
+    api 'org.slf4j:slf4j-api:1.7.32'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     implementation "io.vavr:vavr:0.10.4"
     implementation 'com.montealegreluis:assert:1.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.22'
