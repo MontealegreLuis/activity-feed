@@ -2,6 +2,7 @@ package com.montealegreluis.activityfeed;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
 
+import com.montealegreluis.assertions.Assert;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 
@@ -9,6 +10,7 @@ public final class ActivityFeed {
   private final Logger logger;
 
   public ActivityFeed(Logger logger) {
+    Assert.notNull(logger, "Logger cannot be null");
     this.logger = logger;
   }
 

@@ -1,14 +1,21 @@
 package com.montealegreluis.activityfeed;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+import com.montealegreluis.assertions.IllegalArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 final class ActivityFeedTest {
+  @Test
+  void it_cannot_be_created_without_a_logger() {
+    assertThrows(IllegalArgumentException.class, () -> new ActivityFeed(null));
+  }
+
   @Test
   void it_logs_a_debugging_activity() {
     when(logger.isDebugEnabled()).thenReturn(true);
