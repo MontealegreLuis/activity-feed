@@ -196,6 +196,44 @@ The example above would be represented as JSON as follows.
 }
 ```
 
+### Activity builder
+
+You can also create an activity using a builder
+
+```java
+anActivity()
+  .error()
+  .withIdentifier("application-error")
+  .withMessage("Application error")
+  .with("code", 500)
+  .withException(exception)
+  .build();
+```
+
+The snippet above will produce the following JSON.
+
+```json
+{
+  "context": {
+    "identifier": "application-error",
+    "message": "Application error",
+    "code": 500,
+    "exception": {
+      "message": "For input string \"two\"",
+      "class": "java.lang.NumberFormatException",
+      "line": 65,
+      "file": "NumberFormatException.java",
+      "trace": [
+        "java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)",
+        "java.base/java.lang.Integer.parseInt(Integer.java:652)",
+        "java.base/java.lang.Integer.parseInt(Integer.java:770)",
+        "com.montealegreluis.activityfeed.Application.main(Application.java:10)"
+      ]
+    }
+  }
+}
+```
+
 ### Instantiating an Activity Feed
 
 ```java
@@ -240,7 +278,7 @@ feed.record(exceptionWasThrown(exception));
 
 ## Spring Boot integration
 
-To integrate with Spring Boot, you'll need to configure the encoder in `src/main/resources/logback.xml` as shown below.
+To integrate with Spring Boot, you'll need to configure a Logstash encoder in `src/main/resources/logback.xml` as shown below.
 
 ```xml
 <configuration>
