@@ -1,13 +1,13 @@
 package com.montealegreluis.activityfeed;
 
-import static com.montealegreluis.activityfeed.ActivityFactory.anActivity;
+import static com.montealegreluis.activityfeed.ActivityBuilder.anActivity;
 import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFrom;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.montealegreluis.assertions.IllegalArgumentException;
 import org.junit.jupiter.api.Test;
 
-final class ActivityFactoryTest {
+final class ActivityBuilderTest {
   @Test
   void it_fails_to_build_an_activity_without_a_level() {
     assertThrows(IllegalArgumentException.class, () -> anActivity().build());

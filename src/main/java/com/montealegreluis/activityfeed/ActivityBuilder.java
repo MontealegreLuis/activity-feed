@@ -7,53 +7,53 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public final class ActivityFactory {
+public final class ActivityBuilder {
   private final Map<String, Object> context = new LinkedHashMap<>();
   private Level level;
   private String identifier;
   private String message;
 
-  public static ActivityFactory anActivity() {
-    return new ActivityFactory();
+  public static ActivityBuilder anActivity() {
+    return new ActivityBuilder();
   }
 
-  public ActivityFactory debug() {
+  public ActivityBuilder debug() {
     level = Level.CONFIG;
     return this;
   }
 
-  public ActivityFactory info() {
+  public ActivityBuilder info() {
     level = Level.INFO;
     return this;
   }
 
-  public ActivityFactory warning() {
+  public ActivityBuilder warning() {
     level = Level.WARNING;
     return this;
   }
 
-  public ActivityFactory error() {
+  public ActivityBuilder error() {
     level = Level.SEVERE;
     return this;
   }
 
-  public ActivityFactory withIdentifier(String identifier) {
+  public ActivityBuilder withIdentifier(String identifier) {
     this.identifier = identifier;
     return this;
   }
 
-  public ActivityFactory withMessage(String message) {
+  public ActivityBuilder withMessage(String message) {
     this.message = message;
     return this;
   }
 
-  public ActivityFactory withException(Throwable exception) {
+  public ActivityBuilder withException(Throwable exception) {
     Assert.notNull(exception, "Exception cannot be null");
     context.put("exception", contextFrom(exception));
     return this;
   }
 
-  public ActivityFactory with(String key, Object value) {
+  public ActivityBuilder with(String key, Object value) {
     context.put(key, value);
     return this;
   }
