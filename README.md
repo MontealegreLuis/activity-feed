@@ -98,10 +98,25 @@ The example above would be represented as JSON as follows
 
 ### Masking sensitive information
 
-This package provides a custom serializer to mask sensitive information.
-In order to mask a value, it must implement the `MaskedValue` interface.
+This package provides a factory for serializers that mask sensitive information.
+
+In order to mask a value, you could either create a marker interface or an interface with a default implementation that returns a masked value.
 
 ```java
+// Marker interface
+public interface MaskedValue {}
+// Interface with a default implementation
+public interface MaskedValue {
+  default String maskedValue() {
+    return "*****";
+  }
+}
+```
+
+You would then use the interface on the classes with identifiable information. For instance:
+
+```java
+// This value will be redacted in logs
 public final class FullName implements MaskedValue {}
 
 public final class Passport {
@@ -112,12 +127,34 @@ public final class Passport {
 }
 ```
 
-The second step is to configure your `ObjectMapper` as follows.
+The second step is to use the factory to create a serializer for your interface.
+
+```java
+// With default mask
+var serializer = SerializerFactory.forType(MaskedValue.class);
+// With custom mask
+var serializer = SerializerFactory.forType(
+    MaskedValue.class, 
+    "REDACTED");
+// Using a lambda (`ValueMasker` functional interface)
+var serializer = SerializerFactory.forType(
+    MaskedValue.class,
+    (MaskedValue value, JsonGenerator generator, SerializerProvider provider) -> {
+      var stringValue = value.toString();
+      // Original value first and last character
+      generator.writeString(
+              stringValue.charAt(0)
+              + "*****"
+              + stringValue.substring(stringValue.length() - 1));
+    }));
+```
+
+The final step is to configure your `ObjectMapper` as follows.
 
 ```java
 var mapper = new ObjectMapper();
 var module = new SimpleModule();
-module.addSerializer(new MaskedValueSerializer());
+module.addSerializer(serializer);
 mapper.registerModule(module);
 ```
 

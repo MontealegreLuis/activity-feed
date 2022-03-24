@@ -5,7 +5,6 @@ import static com.montealegreluis.activityfeed.ContextAssertions.assertContextVa
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.montealegreluis.assertions.IllegalArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,21 +34,6 @@ final class ContextSerializerTest {
     assertContextValueEquals(age, "age", context);
   }
 
-  @Test
-  void it_masks_sensitive_values() {
-    var mapper = new ObjectMapper();
-    var module = new SimpleModule();
-    module.addSerializer(new MaskedValueSerializer());
-    mapper.registerModule(module);
-    var serializer = new ContextSerializer(mapper);
-    var fullName = new FullName("Jane Doe");
-
-    var context = serializer.toContextMap(new Passport(fullName));
-
-    assertContextSize(1, context);
-    assertContextValueEquals("*****", "fullName", context);
-  }
-
   @BeforeEach
   void let() {
     serializer = new ContextSerializer(new ObjectMapper());
@@ -60,14 +44,6 @@ final class ContextSerializerTest {
   private static final class ClassWithCircularReferences {
     // self references produce infinite cycles
     private final ClassWithCircularReferences self = this;
-  }
-
-  private static final class Passport {
-    private final FullName fullName;
-
-    public Passport(FullName fullName) {
-      this.fullName = fullName;
-    }
   }
 
   private static final class PersonalInformation {
