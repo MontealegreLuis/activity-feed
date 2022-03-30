@@ -1,9 +1,9 @@
 package com.montealegreluis.activityfeed;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
+import static org.slf4j.event.Level.*;
 
 import com.montealegreluis.assertions.Assert;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 
 public final class ActivityFeed {
@@ -15,13 +15,13 @@ public final class ActivityFeed {
   }
 
   public void record(Activity activity) {
-    if (Level.INFO.equals(activity.level()) && logger.isInfoEnabled()) {
+    if (INFO.equals(activity.level()) && logger.isInfoEnabled()) {
       logger.info(appendEntries(activity.context()), activity.message());
-    } else if (Level.WARNING.equals(activity.level()) && logger.isWarnEnabled()) {
+    } else if (WARN.equals(activity.level()) && logger.isWarnEnabled()) {
       logger.warn(appendEntries(activity.context()), activity.message());
-    } else if (Level.SEVERE.equals(activity.level()) && logger.isErrorEnabled()) {
+    } else if (ERROR.equals(activity.level()) && logger.isErrorEnabled()) {
       logger.error(appendEntries(activity.context()), activity.message());
-    } else if (Level.CONFIG.equals(activity.level()) && logger.isDebugEnabled()) {
+    } else if (DEBUG.equals(activity.level()) && logger.isDebugEnabled()) {
       logger.debug(appendEntries(activity.context()), activity.message());
     }
   }

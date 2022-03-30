@@ -3,8 +3,8 @@ package com.montealegreluis.activityfeed;
 import com.montealegreluis.assertions.Assert;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import lombok.EqualsAndHashCode;
+import org.slf4j.event.Level;
 
 @EqualsAndHashCode(exclude = "factory")
 public final class Activity {
@@ -19,7 +19,7 @@ public final class Activity {
   }
 
   public static Activity info(String identifier, String message, ContextFactory factory) {
-    return new Activity(Level.INFO, identifier, message, factory);
+    return withLevel(Level.INFO, identifier, message, factory);
   }
 
   public static Activity warning(String identifier, String message) {
@@ -27,7 +27,7 @@ public final class Activity {
   }
 
   public static Activity warning(String identifier, String message, ContextFactory factory) {
-    return new Activity(Level.WARNING, identifier, message, factory);
+    return withLevel(Level.WARN, identifier, message, factory);
   }
 
   public static Activity error(String identifier, String message) {
@@ -35,7 +35,7 @@ public final class Activity {
   }
 
   public static Activity error(String identifier, String message, ContextFactory factory) {
-    return new Activity(Level.SEVERE, identifier, message, factory);
+    return withLevel(Level.ERROR, identifier, message, factory);
   }
 
   public static Activity debug(String identifier, String message) {
@@ -43,7 +43,12 @@ public final class Activity {
   }
 
   public static Activity debug(String identifier, String message, ContextFactory factory) {
-    return new Activity(Level.CONFIG, identifier, message, factory);
+    return withLevel(Level.DEBUG, identifier, message, factory);
+  }
+
+  static Activity withLevel(
+      Level level, String identifier, String message, ContextFactory factory) {
+    return new Activity(level, identifier, message, factory);
   }
 
   public String message() {
@@ -63,6 +68,7 @@ public final class Activity {
   }
 
   private Activity(Level level, String identifier, String message, ContextFactory factory) {
+    Assert.notNull(level, "Level cannot be null");
     this.level = level;
     Assert.notBlank(identifier, "Activity identifier cannot be blank. '%s' given");
     this.identifier = identifier;

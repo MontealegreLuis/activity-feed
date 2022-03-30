@@ -5,7 +5,7 @@ import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFr
 import com.montealegreluis.assertions.Assert;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import org.slf4j.event.Level;
 
 public final class ActivityBuilder {
   private final Map<String, Object> context = new LinkedHashMap<>();
@@ -18,7 +18,7 @@ public final class ActivityBuilder {
   }
 
   public ActivityBuilder debug() {
-    level = Level.CONFIG;
+    level = Level.DEBUG;
     return this;
   }
 
@@ -28,12 +28,12 @@ public final class ActivityBuilder {
   }
 
   public ActivityBuilder warning() {
-    level = Level.WARNING;
+    level = Level.WARN;
     return this;
   }
 
   public ActivityBuilder error() {
-    level = Level.SEVERE;
+    level = Level.ERROR;
     return this;
   }
 
@@ -59,13 +59,7 @@ public final class ActivityBuilder {
   }
 
   public Activity build() {
-    if (Level.CONFIG.equals(level)) {
-      return Activity.debug(identifier, message, (context) -> context.putAll(this.context));
-    } else if (Level.INFO.equals(level)) {
-      return Activity.info(identifier, message, (context) -> context.putAll(this.context));
-    } else if (Level.WARNING.equals(level)) {
-      return Activity.warning(identifier, message, (context) -> context.putAll(this.context));
-    }
-    return Activity.error(identifier, message, (context) -> context.putAll(this.context));
+    return Activity.withLevel(
+        level, identifier, message, (context) -> context.putAll(this.context));
   }
 }

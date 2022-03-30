@@ -62,6 +62,15 @@ final class ActivityTest {
   }
 
   @Test
+  void it_prevents_null_levels() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            Activity.withLevel(
+                null, "identifier", "A message", (context) -> context.put("key", "value")));
+  }
+
+  @Test
   void it_prevents_blank_or_null_identifiers() {
     assertThrows(IllegalArgumentException.class, () -> Activity.info(" ", "A message"));
     assertThrows(IllegalArgumentException.class, () -> Activity.warning(null, "A message"));
