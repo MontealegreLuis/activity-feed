@@ -23,6 +23,8 @@ public final class ActivityFeed {
       logger.error(appendEntries(activity.context()), activity.message());
     } else if (DEBUG.equals(activity.level()) && logger.isDebugEnabled()) {
       logger.debug(appendEntries(activity.context()), activity.message());
+    } else if (TRACE.equals(activity.level()) && logger.isTraceEnabled()) {
+      logger.trace(appendEntries(activity.context()), activity.message());
     }
   }
 }

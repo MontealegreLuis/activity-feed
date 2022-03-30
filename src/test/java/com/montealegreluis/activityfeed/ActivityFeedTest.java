@@ -124,6 +124,30 @@ final class ActivityFeedTest {
     verify(logger, times(0)).error(any(Marker.class), any());
   }
 
+  @Test
+  void it_logs_a_trace_activity() {
+    when(logger.isTraceEnabled()).thenReturn(true);
+    var activity =
+        Activity.trace(
+            "method-arguments",
+            "Method call arguments",
+            (context) -> context.put("message", "A message"));
+
+    feed.record(activity);
+
+    verify(logger).trace(appendEntries(activity.context()), activity.message());
+  }
+
+  @Test
+  void it_does_not_log_an_trace_activity_if_error_level_is_not_enabled() {
+    when(logger.isTraceEnabled()).thenReturn(false);
+    var activity = Activity.trace("method-arguments", "Method call arguments");
+
+    feed.record(activity);
+
+    verify(logger, times(0)).trace(any(Marker.class), any());
+  }
+
   @BeforeEach
   void let() {
     logger = mock(Logger.class);

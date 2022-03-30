@@ -46,6 +46,14 @@ public final class Activity {
     return withLevel(Level.DEBUG, identifier, message, factory);
   }
 
+  public static Activity trace(String identifier, String message) {
+    return trace(identifier, message, null);
+  }
+
+  public static Activity trace(String identifier, String message, ContextFactory factory) {
+    return withLevel(Level.TRACE, identifier, message, factory);
+  }
+
   static Activity withLevel(
       Level level, String identifier, String message, ContextFactory factory) {
     return new Activity(level, identifier, message, factory);
