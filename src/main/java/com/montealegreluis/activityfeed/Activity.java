@@ -51,11 +51,11 @@ public final class Activity {
     return new Activity(level, identifier, message, factory);
   }
 
-  public String message() {
+  String message() {
     return message;
   }
 
-  public Map<String, Object> context() {
+  Map<String, Object> context() {
     Map<String, Object> context = new LinkedHashMap<>();
     context.put("identifier", identifier);
     if (factory != null) factory.addEntries(context);
@@ -63,7 +63,7 @@ public final class Activity {
     return this.context;
   }
 
-  public Level level() {
+  Level level() {
     return level;
   }
 
