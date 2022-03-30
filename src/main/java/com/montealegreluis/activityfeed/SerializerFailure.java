@@ -1,6 +1,6 @@
 package com.montealegreluis.activityfeed;
 
-public class SerializerFailure extends RuntimeException {
+public final class SerializerFailure extends RuntimeException {
   public SerializerFailure(Object value, Throwable cause) {
     super(
         String.format(
