@@ -18,6 +18,7 @@ Log Markers allow you to stamp individual log entries with unique tokens, improv
 The activity feed supports 4 logging levels.
 
 ```java
+Activity.trace("identifier","Message");
 Activity.debug("identifier","Message");
 Activity.info("identifier","Message");
 Activity.warn("identifier","Message");

@@ -17,6 +17,11 @@ public final class ActivityBuilder {
     return new ActivityBuilder();
   }
 
+  public ActivityBuilder trace() {
+    level = Level.TRACE;
+    return this;
+  }
+
   public ActivityBuilder debug() {
     level = Level.DEBUG;
     return this;

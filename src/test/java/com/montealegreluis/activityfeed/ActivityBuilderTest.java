@@ -50,6 +50,16 @@ final class ActivityBuilderTest {
   }
 
   @Test
+  void it_builds_a_tracing_activity_without_context() {
+    var traceActivity = Activity.trace("saving-file", "Saving file");
+
+    var activity =
+        anActivity().trace().withIdentifier("saving-file").withMessage("Saving file").build();
+
+    assertEquals(traceActivity, activity);
+  }
+
+  @Test
   void it_builds_a_warning_activity_without_context() {
     var warningActivity = Activity.warning("validation-errors", "Validation errors were found");
 
