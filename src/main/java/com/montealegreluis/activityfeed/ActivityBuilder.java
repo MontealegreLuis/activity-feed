@@ -9,37 +9,32 @@ import org.slf4j.event.Level;
 
 public final class ActivityBuilder {
   private final Map<String, Object> context = new LinkedHashMap<>();
-  private Level level;
+  private final Level level;
   private String identifier;
   private String message;
 
-  public static ActivityBuilder anActivity() {
-    return new ActivityBuilder();
+  public static ActivityBuilder aTracingActivity() {
+    return new ActivityBuilder(Level.TRACE);
   }
 
-  public ActivityBuilder trace() {
-    level = Level.TRACE;
-    return this;
+  public static ActivityBuilder aDebuggingActivity() {
+    return new ActivityBuilder(Level.DEBUG);
   }
 
-  public ActivityBuilder debug() {
-    level = Level.DEBUG;
-    return this;
+  public static ActivityBuilder anInformationalActivity() {
+    return new ActivityBuilder(Level.INFO);
   }
 
-  public ActivityBuilder info() {
-    level = Level.INFO;
-    return this;
+  public static ActivityBuilder anErrorActivity() {
+    return new ActivityBuilder(Level.ERROR);
   }
 
-  public ActivityBuilder warning() {
-    level = Level.WARN;
-    return this;
+  public static ActivityBuilder aWarningActivity() {
+    return new ActivityBuilder(Level.WARN);
   }
 
-  public ActivityBuilder error() {
-    level = Level.ERROR;
-    return this;
+  private ActivityBuilder(Level level) {
+    this.level = level;
   }
 
   public ActivityBuilder withIdentifier(String identifier) {

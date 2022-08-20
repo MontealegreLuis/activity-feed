@@ -1,6 +1,6 @@
 package com.montealegreluis.activityfeed;
 
-import static com.montealegreluis.activityfeed.ActivityBuilder.anActivity;
+import static com.montealegreluis.activityfeed.ActivityBuilder.*;
 import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFrom;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,20 +9,15 @@ import org.junit.jupiter.api.Test;
 
 final class ActivityBuilderTest {
   @Test
-  void it_fails_to_build_an_activity_without_a_level() {
-    assertThrows(IllegalArgumentException.class, () -> anActivity().build());
-  }
-
-  @Test
   void it_fails_to_build_an_activity_without_identifier() {
-    assertThrows(IllegalArgumentException.class, () -> anActivity().info().build());
+    assertThrows(IllegalArgumentException.class, () -> anInformationalActivity().build());
   }
 
   @Test
   void it_fails_to_build_an_activity_without_message() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> anActivity().info().withIdentifier("application-error").build());
+        () -> anInformationalActivity().withIdentifier("application-error").build());
   }
 
   @Test
@@ -30,8 +25,7 @@ final class ActivityBuilderTest {
     var errorActivity = Activity.error("application-error", "Application Error");
 
     var activity =
-        anActivity()
-            .error()
+        anErrorActivity()
             .withIdentifier("application-error")
             .withMessage("Application Error")
             .build();
@@ -44,7 +38,7 @@ final class ActivityBuilderTest {
     var debugActivity = Activity.debug("saving-file", "Saving file");
 
     var activity =
-        anActivity().debug().withIdentifier("saving-file").withMessage("Saving file").build();
+        aDebuggingActivity().withIdentifier("saving-file").withMessage("Saving file").build();
 
     assertEquals(debugActivity, activity);
   }
@@ -54,7 +48,7 @@ final class ActivityBuilderTest {
     var traceActivity = Activity.trace("saving-file", "Saving file");
 
     var activity =
-        anActivity().trace().withIdentifier("saving-file").withMessage("Saving file").build();
+        aTracingActivity().withIdentifier("saving-file").withMessage("Saving file").build();
 
     assertEquals(traceActivity, activity);
   }
@@ -64,8 +58,7 @@ final class ActivityBuilderTest {
     var warningActivity = Activity.warning("validation-errors", "Validation errors were found");
 
     var activity =
-        anActivity()
-            .warning()
+        aWarningActivity()
             .withIdentifier("validation-errors")
             .withMessage("Validation errors were found")
             .build();
@@ -78,8 +71,7 @@ final class ActivityBuilderTest {
     var infoActivity = Activity.info("file-saved", "File saved successfully");
 
     var activity =
-        anActivity()
-            .info()
+        anInformationalActivity()
             .withIdentifier("file-saved")
             .withMessage("File saved successfully")
             .build();
@@ -96,8 +88,7 @@ final class ActivityBuilderTest {
             (context) -> context.put("action", "search-concerts"));
 
     var activity =
-        anActivity()
-            .error()
+        anErrorActivity()
             .withIdentifier("application-error")
             .withMessage("Application Error")
             .with("action", "search-concerts")
@@ -116,8 +107,7 @@ final class ActivityBuilderTest {
             (context) -> context.put("errorsCount", 1));
 
     var activity =
-        anActivity()
-            .warning()
+        aWarningActivity()
             .withIdentifier("validation-error")
             .withMessage("Validation errors were found")
             .with("errorsCount", 1)
@@ -134,8 +124,7 @@ final class ActivityBuilderTest {
             "saving-file", "Saving file", (context) -> context.put("filename", "example.pdf"));
 
     var activity =
-        anActivity()
-            .debug()
+        aDebuggingActivity()
             .withIdentifier("saving-file")
             .withMessage("Saving file")
             .with("filename", "example.pdf")
@@ -152,8 +141,7 @@ final class ActivityBuilderTest {
             "file-saved", "File saved", (context) -> context.put("filename", "example.pdf"));
 
     var activity =
-        anActivity()
-            .info()
+        anInformationalActivity()
             .withIdentifier("file-saved")
             .withMessage("File saved")
             .with("filename", "example.pdf")
@@ -165,7 +153,7 @@ final class ActivityBuilderTest {
 
   @Test
   void it_prevents_adding_a_null_exception_to_its_context() {
-    assertThrows(IllegalArgumentException.class, () -> anActivity().error().withException(null));
+    assertThrows(IllegalArgumentException.class, () -> anErrorActivity().withException(null));
   }
 
   @Test
@@ -178,8 +166,7 @@ final class ActivityBuilderTest {
             (context) -> context.put("exception", contextFrom(exception)));
 
     var activity =
-        anActivity()
-            .error()
+        anErrorActivity()
             .withIdentifier("application-error")
             .withMessage("Application error")
             .withException(exception)

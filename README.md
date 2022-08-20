@@ -176,11 +176,10 @@ The example above would be represented as JSON as follows.
 
 #### Activity builder
 
-You can also create an activity using a builder
+You can also create an activity using the `ActivityBuilder`.
 
 ```java
-anActivity()
-  .error()
+anErrorActivity()
   .withIdentifier("application-error")
   .withMessage("Application error")
   .with("code", 500)
