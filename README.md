@@ -15,7 +15,21 @@ Log Markers allow you to stamp individual log entries with unique tokens, improv
 
 ## Usage
 
-The activity feed supports 4 logging levels.
+```java
+var logger = LoggerFactory.getLogger(Application.class);
+var feed = ActivityFeed.withLogging(logger);
+
+// .. 
+
+feed.add(Activity.info("identifier","Something happened");)
+```
+
+### Activities
+
+An **activity** is a log entry consisting of a message, an **identifier**, and a **context**.
+Representing your logging events as activities makes them easily **searchable** and **queryable**, because they're structured by default.
+
+Activities have 5 **levels** as shown below.
 
 ```java
 Activity.trace("identifier","Message");
@@ -25,21 +39,22 @@ Activity.warn("identifier","Message");
 Activity.error("identifier","Message");
 ```
 
-Log markers are added as `Map` entries. 
-This Maven package defines one root key in the `Map` called `context`. 
-The value of the `context` key is another `Map` that includes the given `identifier` by default.
-
-The examples above would be represented as JSON as follows.
+All the examples above would be represented as JSON as follows.
 
 ```json
 {
+  "message": "Message",
   "context": {
     "identifier": "identifier"
   }
 }
 ```
 
-### Adding context values to log messages
+#### Adding context to activities
+
+Suppose we have an application to purchase products, and we want to know what people is usually searching for and how long a search usually takes.
+
+We would create an activity as shown below.
 
 ```java
 Activity.info(
@@ -56,6 +71,7 @@ The example above would be represented as JSON as follows.
 
 ```json
 {
+  "message": "Search Products completed",
   "context": {
     "identifier": "search-products",
     "maximumPrice": 200,
@@ -65,9 +81,12 @@ The example above would be represented as JSON as follows.
 }
 ```
 
-### Adding objects as context entries
+#### Adding objects to an activity context
 
-This library provides a `ContextSerializer` that depends on an [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html) to convert any type of object into a context entry.
+We can add any object to an activity context using a `ContextSerializer`.
+The context serializer depends on an [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html).
+
+Suppose you want to know the information of new accounts in your application.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,18 +97,20 @@ var serializer = new ContextSerializer(new ObjectMapper());
 var user = User.signUp("Jane Doe", 23);
 
 Activity.info(
-  "sign-up-user",
-  "User sign-up completed",
-  (context)-> context.put("user", serializer.toMap(user)));
+  "sign-up-customer",
+  "Customer sign-up completed",
+  (context) 
+    -> context.put("customer", serializer.toMap(customer)));
 ```
 
 The example above would be represented as JSON as follows
 
 ```json
 {
+  "message": "Customer sign-up completed",
   "context": {
-    "identifier": "sign-up-user",
-    "user": {
+    "identifier": "sign-up-customer",
+    "customer": {
       "name": "Jane Doe",
       "age": 23
     }
@@ -97,101 +118,20 @@ The example above would be represented as JSON as follows
 }
 ```
 
-### Masking sensitive information
+#### Adding an exception to an activity context
 
-This package provides a factory for serializers that mask sensitive information.
-
-In order to mask a value, you could either create a marker interface or an interface with a default implementation that returns a masked value.
+You can use the `ExceptionContextFactory` to add exception information to an activity as shown below.
 
 ```java
-// Marker interface
-public interface MaskedValue {}
-// Interface with a default implementation
-public interface MaskedValue {
-  default String maskedValue() {
-    return "*****";
-  }
-}
-```
+import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFrom;
 
-You would then use the interface on the classes with identifiable information. For instance:
+// ...
 
-```java
-// This value will be redacted in logs
-public final class FullName implements MaskedValue {}
-
-public final class Passport {
-  private final FullName fullName;
-  public Passport(FullName fullName) {
-    this.fullName = fullName;
-  }
-}
-```
-
-The second step is to use the factory to create a serializer for your interface.
-
-```java
-// With default mask
-var serializer = SerializerFactory.forType(MaskedValue.class);
-// With custom mask
-var serializer = SerializerFactory.forType(
-    MaskedValue.class, 
-    "REDACTED");
-// Using a lambda (`ValueMasker` functional interface)
-var serializer = SerializerFactory.forType(
-    MaskedValue.class,
-    (MaskedValue value, JsonGenerator generator, SerializerProvider provider) -> {
-      var stringValue = value.toString();
-      // Original value first and last character
-      generator.writeString(
-              stringValue.charAt(0)
-              + "*****"
-              + stringValue.substring(stringValue.length() - 1));
-    }));
-```
-
-The final step is to configure your `ObjectMapper` as follows.
-
-```java
-var mapper = new ObjectMapper();
-var module = new SimpleModule();
-module.addSerializer(serializer);
-mapper.registerModule(module);
-```
-
-Once the object mapper is configured, your activity feed is ready to serialize and mask sensitive information.
-
-```java
-feed.record(Activity.info(
-  "save-travel-information",
-  "Travel information has been saved",
-  (context) -> context.put("passport", passport)
-));
-```
-
-The example above would be represented as JSON as follows
-
-```json
-{
-  "context": {
-    "identifier": "save-travel-information",
-    "passport": {
-      "fullName": "*****"
-    }
-  }
-}
-```
-
-### Logging an exception
-
-```java
 Activity.error(
   "unhandled-exception",
   exception.getMessage(),
   (context) -> 
-    context.put(
-      "exception",
-      ExceptionContextFactory.contextFrom(exception)));
+    context.put("exception", contextFrom(exception)));
 ```
 
 The example above would be represented as JSON as follows.
@@ -234,7 +174,7 @@ The example above would be represented as JSON as follows.
 }
 ```
 
-### Activity builder
+#### Activity builder
 
 You can also create an activity using a builder
 
@@ -252,9 +192,9 @@ The snippet above will produce the following JSON.
 
 ```json
 {
+  "message": "Application error",
   "context": {
     "identifier": "application-error",
-    "message": "Application error",
     "code": 500,
     "exception": {
       "message": "For input string \"two\"",
@@ -272,30 +212,16 @@ The snippet above will produce the following JSON.
 }
 ```
 
-### Instantiating an Activity Feed
+#### Factories for Activities
 
-```java
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class Application {
-  public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(Application.class);
-    ActivityFeed feed = new ActivityFeed(logger);
-  }
-}
-```
-
-### Factories for Activities
-
-You'll probably want to abstract the creation of the activity in a factory.
+In order to make your code more maintainable and readable, you could abstract the creation of the activity in a factory.
 
 ```java
 import static com.montealegreluis.activityfeed.Activity.error;
 import static com.montealegreluis.activityfeed.ExceptionContextFactory.contextFrom;
 
 public class ActivityFactory {
-  public static Activity exceptionWasThrown(Throwable exception) {
+  public static Activity anExceptionWasThrown(Throwable exception) {
     return error(
       "unhandled-exception",
       exception.getMessage(),
@@ -311,7 +237,136 @@ import static com.montealegreluis.activityfeed.ActivityFactory.exceptionWasThrow
 
 // ...
 
-feed.record(exceptionWasThrown(exception));
+feed.add(anExceptionWasThrown(exception));
+```
+
+#### Masking sensitive information
+
+In order to mask a sensitive value, you could either create a marker interface or an interface with a default implementation that masks the value you want to log.
+
+```java
+// Marker interface
+public interface MaskedValue {}
+
+// Interface with a default implementation
+public interface MaskedValue {
+  default String maskedValue() {
+    return "*****";
+  }
+}
+```
+
+You would then use the interface on the classes with identifiable information. For instance:
+
+```java
+// This value will be redacted in logs
+public final class FullName implements MaskedValue {}
+
+public final class Passport {
+  private final FullName fullName;
+  
+  public Passport(FullName fullName) {
+    this.fullName = fullName;
+  }
+}
+```
+
+The second step is to use the `SerializerFactory` to create a serializer that will mask values implementing for your interface.
+
+```java
+// With default mask *****
+var serializer = SerializerFactory.forType(MaskedValue.class);
+
+// With custom mask REDACTED
+var serializer = SerializerFactory.forType(
+    MaskedValue.class, 
+    "REDACTED");
+
+// Using a lambda (`ValueMasker` functional interface)
+var serializer = SerializerFactory.forType(
+    MaskedValue.class,
+    (MaskedValue value, JsonGenerator generator, SerializerProvider provider) -> {
+      var stringValue = value.toString();
+      // Original value first and last character
+      generator.writeString(
+              stringValue.charAt(0)
+              + "*****"
+              + stringValue.substring(stringValue.length() - 1));
+    }));
+```
+
+The final step is to configure your `ObjectMapper` as follows.
+
+```java
+var mapper = new ObjectMapper();
+var module = new SimpleModule();
+module.addSerializer(serializer);
+mapper.registerModule(module);
+```
+
+Once the object mapper is configured, your activity feed is ready to serialize and mask sensitive information.
+
+```java
+var serializer = new ContextSerializer(mapper);
+
+// ...
+
+feed.add(Activity.info(
+  "save-travel-information",
+  "Travel information has been saved",
+  (context) -> context.put("passport", serializer.toMap(passport))
+));
+```
+
+The example above would be represented as JSON as follows
+
+```json
+{
+  "message": "Travel information has been saved",
+  "context": {
+    "identifier": "save-travel-information",
+    "passport": {
+      "fullName": "*****"
+    }
+  }
+}
+```
+
+### Activity Feed
+
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Application {
+  public static void main(String[] args) {
+    var logger = LoggerFactory.getLogger(Application.class);
+    var feed = ActivityFeed.withLogging(logger);
+  }
+}
+```
+
+### Activity recorders
+
+The activity feed comes by default with a single recorder called `ActivityLogger`.
+The `ActivityLogger` is instantiated and passed to the feed when using the factory method `ActivityFeed.withLogging(logger)`, as shown in the previous section.
+
+If you need to send some activities to other places, you could implement your own `ActivityRecorder`
+
+```java
+public interface ActivityRecorder {
+  void record(Activity activity);
+}
+```
+
+And pass your recorders to the feed, as shown below
+
+```java
+var feed = new ActivityFeed(List.of(
+    new ActivityLogger(logger),
+    new SentryRecorder(), // This is just an example
+    new AnotherCustomRecorder()
+));
 ```
 
 ## Spring Boot integration
