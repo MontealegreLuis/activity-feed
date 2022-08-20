@@ -4,8 +4,7 @@
 [![Release workflow](https://github.com/montealegreluis/activity-feed/actions/workflows/release.yml/badge.svg)](https://github.com/montealegreluis/activity-feed/actions/workflows/release.yml)
 [![semantic-release: conventional-commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-Activity Feed is a thin abstraction for structured logging that takes advantage of Log Markers.
-Log Markers allow you to stamp individual log entries with unique tokens, improving your ability to search and filter log data.
+Activity Feed is a thin abstraction to standardize your implementation of structured logging.
 
 ## Installation
 
@@ -27,7 +26,8 @@ feed.add(Activity.info("identifier","Something happened");)
 ### Activities
 
 An **activity** is a log entry consisting of a message, an **identifier**, and a **context**.
-Representing your logging events as activities makes them easily **searchable** and **queryable**, because they're structured by default.
+
+Representing your logging events as **activities** makes them easily **searchable** and **queryable**, because they're structured by default.
 
 Activities have 5 **levels** as shown below.
 
@@ -83,7 +83,7 @@ The example above would be represented as JSON as follows.
 
 #### Adding objects to an activity context
 
-We can add any object to an activity context using a `ContextSerializer`.
+We can add any object to an activity context using the `ContextSerializer`.
 The context serializer depends on an [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html).
 
 Suppose you want to know the information of new accounts in your application.
@@ -385,7 +385,11 @@ To integrate with Spring Boot, you'll need to configure a Logstash encoder in `s
 
 ## Querying
 
-Below is an example on how to query AWS Cloudwatch using the markers provided by Activity Feed.
+The `ActivityLogger` takes advantage of Log Markers.
+Log Markers stamp individual log entries with unique tokens (the context passed to activities).
+Markers improve your ability to **search and filter** log data.
+
+Below is an example on how to query AWS Cloudwatch using the markers provided by your Activity Feed.
 
 ```sql
 fields @timestamp, `x-correlation-id`, message
@@ -398,7 +402,7 @@ You could filter using any value within `context`.
 
 ## Contribute
 
-Please refer to [CONTRIBUTING](https://github.com/MontealegreLuis/activity-feed/blob/main/CONTRIBUTING.md) for information on how to contribute to Activity Feed.
+Please refer to our [contribution guidelines](https://github.com/MontealegreLuis/activity-feed/blob/main/CONTRIBUTING.md) for information on how to contribute to this project.
 
 ## License
 

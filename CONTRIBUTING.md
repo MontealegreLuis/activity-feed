@@ -44,22 +44,7 @@ make format
 
 [Make](https://en.wikipedia.org/wiki/Make_(software)) will run the [Google Java Format Gradle plugin](https://github.com/sherter/google-java-format-gradle-plugin) in your `src` directory.
 
-## Using Activity Feed from a Git checkout
-
-The following commands can be used to perform the initial checkout of Activity Feed:
-
-```bash
-git clone git://github.com/MontealegreLuis/activity-feed.git
-cd activity-feed
-```
-
-Retrieve Activity Feed dependencies using [Gradle](https://docs.gradle.org/current/userguide/userguide.html):
-
-```bash
-./gradlew assemble
-```
-
-## Running Activity Feed Code Quality Checks
+## Running Code Quality Checks
 
 You can run the tests, check for coding style issues and run the [mutation test suite](https://pitest.org/) as follows:
 
